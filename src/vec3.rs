@@ -1,3 +1,6 @@
+use std::ops::Add;
+
+#[derive(Debug)]
 pub struct Vec3 {
     e: [f64; 3]
 }
@@ -13,5 +16,52 @@ impl Vec3 {
 
     fn z(self) -> f64 {
         self.e[2]
+    }
+}
+
+impl Add for Vec3 {
+    fn add(self, rhs: Self) -> Self::Output {
+        let mut res = Vec3 {
+            e: [0.0, 0.0, 0.0]
+        };
+
+        res.e[0] = self.e[0] + rhs.e[0];
+        res.e[1] = self.e[1] + rhs.e[1];
+        res.e[2] = self.e[2] + rhs.e[2];
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
+impl PartialEq for Vec3 {
+    fn eq(&self, other: &Self) -> bool {
+        if self.e[0] == other.e[0] && self.e[1] == other.e[1] && self.e[2] == other.e[2] {
+            return true;
+        }
+        else {
+            return false;
+        };
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sum() {
+        let v1 = Vec3{
+            e: [2.0, 6.0, 9.0],
+        };
+
+        let v2 = Vec3{
+            e: [1.0, 1.0, 1.0],
+        };
+
+        let v3 = v1 + v2;
+
+        assert_eq!(v3.e, [3.0, 7.0, 10.0])
     }
 }
