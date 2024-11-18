@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, Index, IndexMut};
 
 #[derive(Debug)]
 pub struct Vec3 {
@@ -46,6 +46,20 @@ impl PartialEq for Vec3 {
     }
 }
 
+impl Index<usize> for Vec3 {
+    fn index(&self, index: usize) -> &Self::Output {
+        return &(self.e[index]);
+    }
+
+    type Output = f64;
+}
+
+impl IndexMut<usize> for Vec3 {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        return &mut (self.e[index]);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -63,5 +77,16 @@ mod tests {
         let v3 = v1 + v2;
 
         assert_eq!(v3.e, [3.0, 7.0, 10.0])
+    }
+
+    #[test]
+    fn index() {
+        let v1 = Vec3 {
+            e: [1.5, 3.6, 6.8]
+        };
+
+        let i = 2;
+
+        assert_eq!(v1[i], v1.e[i])
     }
 }
