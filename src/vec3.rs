@@ -1,4 +1,4 @@
-use std::ops::{Add, Index, IndexMut, Sub};
+use std::ops::{Add, Index, IndexMut, Mul, Sub, Div};
 
 #[derive(Debug, Clone)]
 pub struct Vec3 {
@@ -51,6 +51,40 @@ impl Sub for Vec3 {
     type Output = Vec3;
 }
 
+
+impl Mul for Vec3 {
+    fn mul(self, rhs: Self) -> Self::Output {
+        let mut res = Vec3 {
+            e: [0.0, 0.0, 0.0]
+        };
+
+        res.e[0] = self.e[0] * rhs.e[0];
+        res.e[1] = self.e[1] * rhs.e[1];
+        res.e[2] = self.e[2] * rhs.e[2];
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
+
+impl Div for Vec3 {
+    fn div(self, rhs: Self) -> Self::Output {
+        let mut res = Vec3 {
+            e: [0.0, 0.0, 0.0]
+        };
+
+        res.e[0] = self.e[0] / rhs.e[0];
+        res.e[1] = self.e[1] / rhs.e[1];
+        res.e[2] = self.e[2] / rhs.e[2];
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
 impl PartialEq for Vec3 {
     fn eq(&self, other: &Self) -> bool {
         if self.e[0] == other.e[0] && self.e[1] == other.e[1] && self.e[2] == other.e[2] {
@@ -81,7 +115,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn sum_sub() {
+    fn arithmetic() {
         let v1 = Vec3{
             e: [2.0, 6.0, 9.0],
         };
@@ -91,10 +125,20 @@ mod tests {
         };
 
         let v3 = v1.clone() + v2.clone();
-        let v4 = v1 - v2;
+        let v4 = v1.clone() - v2;
 
         assert_eq!(v3.e, [3.0, 7.0, 10.0]);
         assert_eq!(v4.e, [1.0, 5.0, 8.0]);
+
+        let v5 = Vec3{
+            e: [2.0, 2.0, 2.0],
+        };
+
+        let v6 = v1.clone() * v5.clone();
+        let v7 = v1 / v5;
+
+        assert_eq!(v6.e, [4.0, 12.0, 18.0]);
+        assert_eq!(v7.e, [1.0, 3.0, 4.5]);
     }
 
     #[test]
