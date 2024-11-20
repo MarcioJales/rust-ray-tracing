@@ -115,7 +115,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn arithmetic() {
+    fn sum() {
         let v1 = Vec3{
             e: [2.0, 6.0, 9.0],
         };
@@ -124,21 +124,60 @@ mod tests {
             e: [1.0, 1.0, 1.0],
         };
 
-        let v3 = v1.clone() + v2.clone();
-        let v4 = v1.clone() - v2;
+        let v3 = v1 + v2;
 
         assert_eq!(v3.e, [3.0, 7.0, 10.0]);
-        assert_eq!(v4.e, [1.0, 5.0, 8.0]);
+        assert_eq!(v3.e, [3.0, 7.0, 10.0]);
+    }
 
-        let v5 = Vec3{
+
+    #[test]
+    fn sub() {
+        let v1 = Vec3{
+            e: [2.0, 6.0, 9.0],
+        };
+
+        let v2 = Vec3{
+            e: [1.0, 1.0, 1.0],
+        };
+
+        let v3 = v1 - v2;
+
+        assert_eq!(v3.e, [1.0, 5.0, 8.0]);
+    }
+
+
+    #[test]
+    fn mul() {
+        let v1 = Vec3{
+            e: [2.0, 6.0, 9.0],
+        };
+
+        let v2 = Vec3{
             e: [2.0, 2.0, 2.0],
         };
 
-        let v6 = v1.clone() * v5.clone();
-        let v7 = v1 / v5;
+        let v3 = v1 * v2;
+        let v4 = 2.0 * v3;
 
-        assert_eq!(v6.e, [4.0, 12.0, 18.0]);
-        assert_eq!(v7.e, [1.0, 3.0, 4.5]);
+        assert_eq!(v3.e, [4.0, 12.0, 18.0]);
+        assert_eq!(v3.e, [4.0, 12.0, 18.0]);
+    }
+
+
+    #[test]
+    fn div() {
+        let v1 = Vec3{
+            e: [2.0, 6.0, 9.0],
+        };
+
+        let v2 = Vec3{
+            e: [2.0, 2.0, 2.0],
+        };
+
+        let v3 = v1 / v2;
+
+        assert_eq!(v3.e, [1.0, 3.0, 4.5]);
     }
 
     #[test]
