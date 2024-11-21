@@ -68,6 +68,22 @@ impl Mul for Vec3 {
     type Output = Vec3;
 }
 
+impl Mul<Vec3> for f64 {
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        let mut res = Vec3 {
+            e: [0.0, 0.0, 0.0]
+        };
+
+        res.e[0] = self * rhs.e[0];
+        res.e[1] = self * rhs.e[1];
+        res.e[2] = self * rhs.e[2];
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
 
 impl Div for Vec3 {
     fn div(self, rhs: Self) -> Self::Output {
@@ -154,14 +170,14 @@ mod tests {
         };
 
         let v2 = Vec3{
-            e: [2.0, 2.0, 2.0],
+            e: [1.0, 1.5, 2.0],
         };
 
         let v3 = v1 * v2;
-        let v4 = 2.0 * v3;
+        let v4 = 1.5 * v3.clone();
 
-        assert_eq!(v3.e, [4.0, 12.0, 18.0]);
-        assert_eq!(v3.e, [4.0, 12.0, 18.0]);
+        assert_eq!(v3.e, [2.0, 9.0, 18.0]);
+        assert_eq!(v4.e, [3.0, 13.5, 27.0]);
     }
 
 
