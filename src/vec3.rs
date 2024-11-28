@@ -17,6 +17,10 @@ impl Vec3 {
     fn z(self) -> f64 {
         self.e[2]
     }
+
+    fn dot(self, u: Vec3) -> f64 {
+        self.e[0] + u.e[0] + self.e[1] + u.e[1] + self.e[2] + u.e[2]
+    }
 }
 
 impl Add for Vec3 {
@@ -205,5 +209,18 @@ mod tests {
         let i = 2;
 
         assert_eq!(v1[i], v1.e[i])
+    }
+
+    #[test]
+    fn dot() {
+        let v1 = Vec3 {
+            e: [1.5, 0.6, 1.2]
+        };
+
+        let v2 = Vec3 {
+            e: [1.0, 2.5, 2.2]
+        };
+
+        assert_eq!(v1.dot(v2), 9.0) 
     }
 }
