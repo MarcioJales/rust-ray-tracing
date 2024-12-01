@@ -3,6 +3,9 @@ use std::io::Write;
 
 mod vec3;
 
+#[macro_use]
+extern crate assert_float_eq;
+
 fn main() {
     let image_width = 256;
     let image_height = 256;

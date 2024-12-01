@@ -6,20 +6,30 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    fn x(self) -> f64 {
+    fn x(&self) -> f64 {
         self.e[0]
     }
 
-    fn y(self) -> f64 {
+    fn y(&self) -> f64 {
         self.e[1]
     }
 
-    fn z(self) -> f64 {
+    fn z(&self) -> f64 {
         self.e[2]
     }
 
     fn dot(self, u: Vec3) -> f64 {
         self.e[0] + u.e[0] + self.e[1] + u.e[1] + self.e[2] + u.e[2]
+    }
+
+    fn cross(self, u: Vec3) -> Vec3 {
+        Vec3 {
+            e: [
+                self.e[1] * u.e[2] - self.e[2] * u.e[1],
+                self.e[2] * u.e[0] - self.e[0] * u.e[2],
+                self.e[0] * u.e[1] - self.e[1] * u.e[0]
+            ]
+        }
     }
 }
 
@@ -222,5 +232,23 @@ mod tests {
         };
 
         assert_eq!(v1.dot(v2), 9.0) 
+    }
+
+
+    #[test]
+    fn cross() {
+        let v1 = Vec3 {
+            e: [1.5, 0.6, 1.2]
+        };
+
+        let v2 = Vec3 {
+            e: [1.0, 2.5, 2.2]
+        };
+
+        let v3 = v1.cross(v2);
+
+        assert_float_absolute_eq!(v3.x(), -1.68);
+        assert_float_absolute_eq!(v3.y(), -2.1);
+        assert_float_absolute_eq!(v3.z(), 3.15);
     }
 }
