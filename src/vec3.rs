@@ -31,6 +31,16 @@ impl Vec3 {
             ]
         }
     }
+
+    fn length(&self) -> f64 {
+        let squared = self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2];
+        squared.sqrt()
+    }
+
+    fn unit(self) -> Vec3 {
+        let length = self.length();
+        (1.0/length) * self 
+    }
 }
 
 impl Add for Vec3 {
@@ -250,5 +260,19 @@ mod tests {
         assert_float_absolute_eq!(v3.x(), -1.68);
         assert_float_absolute_eq!(v3.y(), -2.1);
         assert_float_absolute_eq!(v3.z(), 3.15);
+    }
+
+    #[test]
+    fn unit_vector() {
+        let v1 = Vec3 {
+            e: [1.2, 2.0, 0.5]
+        };
+
+        let unit = v1.unit();
+
+        assert_float_absolute_eq!(unit.e[0], 0.503066);
+        assert_float_absolute_eq!(unit.e[1], 0.838444);
+        assert_float_absolute_eq!(unit.e[2], 0.209611);
+
     }
 }
