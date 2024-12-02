@@ -2,19 +2,19 @@ use std::ops::{Add, Index, IndexMut, Mul, Sub, Div};
 
 #[derive(Debug, Clone)]
 pub struct Vec3 {
-    e: [f64; 3]
+    pub e: [f64; 3]
 }
 
 impl Vec3 {
-    fn x(&self) -> f64 {
+    pub fn x(&self) -> f64 {
         self.e[0]
     }
 
-    fn y(&self) -> f64 {
+    pub fn y(&self) -> f64 {
         self.e[1]
     }
 
-    fn z(&self) -> f64 {
+    pub fn z(&self) -> f64 {
         self.e[2]
     }
 
