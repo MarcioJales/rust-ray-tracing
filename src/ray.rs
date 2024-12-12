@@ -22,4 +22,23 @@ impl Ray {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn get_at() {
+
+        let r = Ray {
+            orig: Vec3 {
+                e: [1.0, 1.0, 0.0]
+            },
+            dir: Vec3 {
+                e: [1.0, 2.2, 0.5]
+            }
+        };
+
+        let ray = r.at(5.0);
+
+        assert_float_absolute_eq!(ray.e[0], 6.0);
+        assert_float_absolute_eq!(ray.e[1], 12.0);
+        assert_float_absolute_eq!(ray.e[2], 2.5)
+    }
 }
