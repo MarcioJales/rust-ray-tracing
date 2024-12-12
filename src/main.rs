@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::Write;
 
 mod vec3;
+mod ray;
 
 use vec3::Vec3;
 
