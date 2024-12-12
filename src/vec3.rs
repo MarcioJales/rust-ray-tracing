@@ -150,6 +150,10 @@ impl IndexMut<usize> for Vec3 {
     }
 }
 
+/*******************/
+// TEST SECTION
+/*******************/
+
 #[cfg(test)]
 mod tests {
     use super::*;

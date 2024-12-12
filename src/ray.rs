@@ -19,6 +19,10 @@ impl Ray {
     }
 }
 
+/*******************/
+// TEST SECTION
+/*******************/
+
 #[cfg(test)]
 mod tests {
     use super::*;
