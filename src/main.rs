@@ -5,7 +5,7 @@ mod vec3;
 mod ray;
 
 use vec3::Vec3;
-use ray::Ray
+use ray::Ray;
 
 #[macro_use]
 extern crate assert_float_eq;
