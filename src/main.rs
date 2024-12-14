@@ -25,6 +25,15 @@ fn main() {
         e: [0.0, 0.0, 0.0]
     };
 
+    // Calculate the vectors across the horizontal and down the vertical viewport edges.
+    let viewport_u = Vec3 {
+        e: [viewport_width, 0.0, 0.0]
+    };
+
+    let viewport_v = Vec3 {
+        e: [0.0, -viewport_height, 0.0]
+    };
+
 
     let mut f = File::create("image.ppm").unwrap();
 
