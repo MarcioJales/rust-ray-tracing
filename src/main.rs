@@ -34,6 +34,10 @@ fn main() {
         e: [0.0, -viewport_height, 0.0]
     };
 
+    // Calculate the horizontal and vertical delta vectors from pixel to pixel.
+    let pixel_delta_u = (1/image_width) as f64 * viewport_u;
+    let pixel_delta_v = (1/image_height) as f64 * viewport_v;
+
 
     let mut f = File::create("image.ppm").unwrap();
 
