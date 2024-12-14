@@ -35,16 +35,16 @@ fn main() {
     };
 
     // Calculate the horizontal and vertical delta vectors from pixel to pixel.
-    let pixel_delta_u = (1/image_width) as f64 * viewport_u;
-    let pixel_delta_v = (1/image_height) as f64 * viewport_v;
+    let pixel_delta_u = viewport_u / image_width as f64;
+    let pixel_delta_v = viewport_v / image_height as f64;
 
     // Calculate the location of the upper left pixel.
     let focal_length_vector = Vec3 {
         e: [0.0, 0.0, focal_length]
     };
 
-    let viewport_upper_left = camera_center - focal_length_vector - (1.0/2.0) * viewport_u - (1.0/2.0) * viewport_v;
-    let pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+    let viewport_upper_left = camera_center - focal_length_vector - viewport_u / 2.0 - viewport_v / 2.0;
+    let pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v) / 2.0;
 
 
     let mut f = File::create("image.ppm").unwrap();
