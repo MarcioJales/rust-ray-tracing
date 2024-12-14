@@ -38,6 +38,14 @@ fn main() {
     let pixel_delta_u = (1/image_width) as f64 * viewport_u;
     let pixel_delta_v = (1/image_height) as f64 * viewport_v;
 
+    // Calculate the location of the upper left pixel.
+    let focal_length_vector = Vec3 {
+        e: [0.0, 0.0, focal_length]
+    };
+
+    let viewport_upper_left = camera_center - focal_length_vector - (1.0/2.0) * viewport_u - (1.0/2.0) * viewport_v;
+    let pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
 
     let mut f = File::create("image.ppm").unwrap();
 
