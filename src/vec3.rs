@@ -1,6 +1,6 @@
 use std::ops::{Add, Index, IndexMut, Mul, Sub, Div};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
     pub e: [f64; 3]
 }
@@ -37,7 +37,7 @@ impl Vec3 {
         squared.sqrt()
     }
 
-    fn unit(self) -> Vec3 {
+    pub fn unit(self) -> Vec3 {
         let length = self.length();
         (1.0/length) * self 
     }
@@ -125,6 +125,22 @@ impl Div for Vec3 {
     type Output = Vec3;
 }
 
+impl Div<f64> for Vec3 {
+    fn div(self, rhs: f64) -> Self::Output {
+        let mut res = Vec3 {
+            e: [0.0, 0.0, 0.0]
+        };
+
+        res.e[0] = self.e[0] / rhs;
+        res.e[1] = self.e[1] / rhs;
+        res.e[2] = self.e[2] / rhs;
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
 impl PartialEq for Vec3 {
     fn eq(&self, other: &Self) -> bool {
         if self.e[0] == other.e[0] && self.e[1] == other.e[1] && self.e[2] == other.e[2] {
@@ -149,6 +165,10 @@ impl IndexMut<usize> for Vec3 {
         return &mut (self.e[index]);
     }
 }
+
+/*******************/
+// TEST SECTION
+/*******************/
 
 #[cfg(test)]
 mod tests {
@@ -216,8 +236,10 @@ mod tests {
         };
 
         let v3 = v1 / v2;
+        let v4 = v3.clone() / 2.0;
 
         assert_eq!(v3.e, [1.0, 3.0, 4.5]);
+        assert_eq!(v4.e, [0.5, 1.5, 2.25]);
     }
 
     #[test]
