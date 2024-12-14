@@ -92,8 +92,19 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
     writeln!(f, "{} {} {}", rbyte, gbyte, bbyte).unwrap();
 }
 
-fn ray_color(_r: Ray) -> Vec3 {
-    Vec3 {
-        e: [0.0, 0.0, 0.0]
-    }
-}
+fn ray_color(r: Ray) -> Vec3 {
+    let unit_direction = r.direction().unit();
+    let a = 0.5 * (unit_direction.y() + 1.0);
+
+    // Calculate the "lerp". a = 1, color = blue. a = 0, color = blue
+    let white = Vec3 {
+        e: [1.0, 1.0, 1.0]
+    };
+
+    let blue = Vec3 {
+        e: [0.5, 0.7, 1.0]
+    };
+
+    let blended_value = (1.0 - a) * white + a * blue;
+    blended_value
+} 
