@@ -10,8 +10,12 @@ use vec3::Vec3;
 extern crate assert_float_eq;
 
 fn main() {
-    let image_width = 256;
-    let image_height = 256;
+    
+    let aspect_ratio = 16.0 / 9.0;
+    let image_width: i64 = 400;
+
+    // Calculate the image height, and ensure that it's at least 1.
+    let image_height = ((image_width as f64 / aspect_ratio) as i64).max(1);
 
     let mut f = File::create("image.ppm").unwrap();
 
