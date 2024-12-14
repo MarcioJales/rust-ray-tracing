@@ -5,6 +5,7 @@ mod vec3;
 mod ray;
 
 use vec3::Vec3;
+use ray::Ray
 
 #[macro_use]
 extern crate assert_float_eq;
@@ -59,9 +60,14 @@ fn main() {
         i = 0;
         println!("\rScanlines remaining: {}", image_height - j);
         while i < image_width {
-            let pixel_color = Vec3 {
-                e: [(i as f64 / (image_width - 1) as f64 ), (j as f64 / (image_height - 1) as f64), 0.0]
+            let pixel_center = pixel00_loc + (i as f64 * pixel_delta_u) + (j as f64 * pixel_delta_v);
+            let ray_direction = pixel_center - camera_center;
+            let ray = Ray{
+                orig: camera_center,
+                dir: ray_direction
             };
+
+            let pixel_color = ray_color(ray);
 
             write_color(pixel_color, &mut f);
 
@@ -86,7 +92,7 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
     writeln!(f, "{} {} {}", rbyte, gbyte, bbyte).unwrap();
 }
 
-fn ray_color() -> Vec3 {
+fn ray_color(_r: Ray) -> Vec3 {
     Vec3 {
         e: [0.0, 0.0, 0.0]
     }
