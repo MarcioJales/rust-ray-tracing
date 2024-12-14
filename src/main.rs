@@ -51,3 +51,9 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
 
     writeln!(f, "{} {} {}", rbyte, gbyte, bbyte).unwrap();
 }
+
+fn ray_color() -> Vec3 {
+    Vec3 {
+        e: [0.0, 0.0, 0.0]
+    }
+}
