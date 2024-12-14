@@ -17,6 +17,15 @@ fn main() {
     // Calculate the image height, and ensure that it's at least 1.
     let image_height = ((image_width as f64 / aspect_ratio) as i64).max(1);
 
+    // Camera definitions 
+    let focal_length = 1.0;
+    let viewport_height = 2.0;
+    let viewport_width = viewport_height * (image_width/image_height) as f64;
+    let camera_center = Vec3 {
+        e: [0.0, 0.0, 0.0]
+    };
+
+
     let mut f = File::create("image.ppm").unwrap();
 
     writeln!(f, "P3").unwrap();
