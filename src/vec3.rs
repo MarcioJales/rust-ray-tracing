@@ -18,7 +18,7 @@ impl Vec3 {
         self.e[2]
     }
 
-    fn dot(self, u: Vec3) -> f64 {
+    pub fn dot(self, u: Vec3) -> f64 {
         self.e[0] + u.e[0] + self.e[1] + u.e[1] + self.e[2] + u.e[2]
     }
 
