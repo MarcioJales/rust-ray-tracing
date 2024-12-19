@@ -39,7 +39,7 @@ impl Vec3 {
 
     pub fn unit(self) -> Vec3 {
         let length = self.length();
-        (1.0/length) * self 
+        self / length
     }
 }
 
