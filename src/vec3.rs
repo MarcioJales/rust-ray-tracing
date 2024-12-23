@@ -19,7 +19,7 @@ impl Vec3 {
     }
 
     pub fn dot(self, u: Vec3) -> f64 {
-        self.e[0] + u.e[0] + self.e[1] + u.e[1] + self.e[2] + u.e[2]
+        self.e[0] * u.e[0] + self.e[1] * u.e[1] + self.e[2] * u.e[2]
     }
 
     fn cross(self, u: Vec3) -> Vec3 {
@@ -263,7 +263,7 @@ mod tests {
             e: [1.0, 2.5, 2.2]
         };
 
-        assert_eq!(v1.dot(v2), 9.0) 
+        assert_float_absolute_eq!(v1.dot(v2), 5.64) 
     }
 
 
