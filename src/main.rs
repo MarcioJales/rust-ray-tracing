@@ -21,7 +21,7 @@ fn main() {
     // Camera definitions 
     let focal_length = 1.0;
     let viewport_height = 2.0;
-    let viewport_width = viewport_height * (image_width/image_height) as f64;
+    let viewport_width = viewport_height * (image_width as f64 / image_height as f64);
     let camera_center = Vec3 {
         e: [0.0, 0.0, 0.0]
     };
@@ -93,6 +93,13 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
 }
 
 fn ray_color(r: Ray) -> Vec3 {
+    let hit = hit_sphere(Vec3 { e: [0.0, 0.0, -1.0] }, 0.5, r);
+    if hit == true {
+        return Vec3 {
+            e: [1.0, 0.7, 0.0]
+        };
+    }
+
     let unit_direction = r.direction().unit();
     let a = 0.5 * (unit_direction.y() + 1.0);
 
@@ -109,7 +116,7 @@ fn ray_color(r: Ray) -> Vec3 {
     blended_value
 } 
 
-/* The sphere equation is quadritic on the ray constant "t"
+/* The sphere equation is quadritic on the ray variable "t"
 ** Based on that, the a, b and c from Bhaskara are
 ** a = ray_direction * ray_direction
 ** b = -2 * ray_direction * (sphere_center - ray_origin)
@@ -121,6 +128,6 @@ fn hit_sphere(center: Vec3, radius: f64, ray: Ray) -> bool {
     let b = -2.0 * ray.direction().dot(orig_to_center);
     let c = orig_to_center.dot(orig_to_center) - radius*radius;
     let discriminant = b * b - 4.0 * a * c;
-    
+
     return discriminant >= 0.0;
 }
