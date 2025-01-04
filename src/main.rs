@@ -93,11 +93,14 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
 }
 
 fn ray_color(r: Ray) -> Vec3 {
-    let hit = hit_sphere(Vec3 { e: [0.0, 0.0, -1.0] }, 0.5, r);
-    if hit == true {
-        return Vec3 {
-            e: [1.0, 0.7, 0.0]
-        };
+    let center = Vec3 {
+        e: [0.0, 0.0, -1.0]
+    };
+
+    let hit = hit_sphere(center, 0.5, r);
+    if hit > 0.0 {
+        let normal = (r.at(hit) - center).unit();
+        return 0.5 * Vec3 { e: [normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0] };
     }
 
     let unit_direction = r.direction().unit();
@@ -122,12 +125,17 @@ fn ray_color(r: Ray) -> Vec3 {
 ** b = -2 * ray_direction * (sphere_center - ray_origin)
 ** c = (sphere_center - ray_origin) * (sphere_center - ray_origin) - sphere_radius^2
  */
-fn hit_sphere(center: Vec3, radius: f64, ray: Ray) -> bool {
+fn hit_sphere(center: Vec3, radius: f64, ray: Ray) -> f64 {
     let orig_to_center = center - ray.origin();
     let a = ray.direction().dot(ray.direction());
     let b = -2.0 * ray.direction().dot(orig_to_center);
     let c = orig_to_center.dot(orig_to_center) - radius*radius;
     let discriminant = b * b - 4.0 * a * c;
 
-    return discriminant >= 0.0;
+    if discriminant < 0.0 {
+        return -1.0;
+    } 
+    else {
+        return (-b - discriminant.sqrt()) / (2.0 * a);
+    }
 }
