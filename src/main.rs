@@ -119,11 +119,16 @@ fn ray_color(r: Ray) -> Vec3 {
     blended_value
 } 
 
-/* The sphere equation is quadritic on the ray variable "t"
+/* 
+** The sphere equation is quadritic on the ray variable "t"
 ** Based on that, the a, b and c from Bhaskara are
 ** a = ray_direction * ray_direction
 ** b = -2 * ray_direction * (sphere_center - ray_origin)
 ** c = (sphere_center - ray_origin) * (sphere_center - ray_origin) - sphere_radius^2
+ */
+
+/* 
+** Section 6.2 proposes a quick simplification of the code that I didn't do
  */
 fn hit_sphere(center: Vec3, radius: f64, ray: Ray) -> f64 {
     let orig_to_center = center - ray.origin();
