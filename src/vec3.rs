@@ -1,39 +1,35 @@
-use std::ops::{Add, Index, IndexMut, Mul, Sub, Div};
+use std::ops::{Add, Mul, Sub, Div};
 
 #[derive(Debug, Clone, Copy)]
-pub struct Vec3 {
-    pub e: [f64; 3]
-}
+pub struct Vec3(pub f64, pub f64, pub f64);
 
 impl Vec3 {
     pub fn x(&self) -> f64 {
-        self.e[0]
+        self.0
     }
 
     pub fn y(&self) -> f64 {
-        self.e[1]
+        self.1
     }
 
     pub fn z(&self) -> f64 {
-        self.e[2]
+        self.2
     }
 
     pub fn dot(self, u: Vec3) -> f64 {
-        self.e[0] * u.e[0] + self.e[1] * u.e[1] + self.e[2] * u.e[2]
+        self.0 * u.0 + self.1 * u.1 + self.2 * u.2
     }
 
-    fn cross(self, u: Vec3) -> Vec3 {
-        Vec3 {
-            e: [
-                self.e[1] * u.e[2] - self.e[2] * u.e[1],
-                self.e[2] * u.e[0] - self.e[0] * u.e[2],
-                self.e[0] * u.e[1] - self.e[1] * u.e[0]
-            ]
-        }
+    pub fn cross(self, u: Vec3) -> Vec3 {
+        Vec3(
+            self.1 * u.2 - self.2 * u.1,
+            self.2 * u.0 - self.0 * u.2,
+            self.0 * u.1 - self.1 * u.0
+        )
     }
 
     fn length(&self) -> f64 {
-        let squared = self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2];
+        let squared = self.0 * self.0 + self.1 * self.1 + self.2 * self.2;
         squared.sqrt()
     }
 
@@ -45,13 +41,11 @@ impl Vec3 {
 
 impl Add for Vec3 {
     fn add(self, rhs: Self) -> Self::Output {
-        let mut res = Vec3 {
-            e: [0.0, 0.0, 0.0]
-        };
+        let mut res = Vec3(0.0, 0.0, 0.0);
 
-        res.e[0] = self.e[0] + rhs.e[0];
-        res.e[1] = self.e[1] + rhs.e[1];
-        res.e[2] = self.e[2] + rhs.e[2];
+        res.0 = self.0 + rhs.0;
+        res.1 = self.1 + rhs.1;
+        res.2 = self.2 + rhs.2;
 
         res
     }
@@ -61,13 +55,11 @@ impl Add for Vec3 {
 
 impl Sub for Vec3 {
     fn sub(self, rhs: Self) -> Self::Output {
-        let mut res = Vec3 {
-            e: [0.0, 0.0, 0.0]
-        };
+        let mut res = Vec3(0.0, 0.0, 0.0);
 
-        res.e[0] = self.e[0] - rhs.e[0];
-        res.e[1] = self.e[1] - rhs.e[1];
-        res.e[2] = self.e[2] - rhs.e[2];
+        res.0 = self.0 - rhs.0;
+        res.1 = self.1 - rhs.1;
+        res.2 = self.2 - rhs.2;
 
         res
     }
@@ -78,13 +70,11 @@ impl Sub for Vec3 {
 
 impl Mul for Vec3 {
     fn mul(self, rhs: Self) -> Self::Output {
-        let mut res = Vec3 {
-            e: [0.0, 0.0, 0.0]
-        };
+        let mut res = Vec3(0.0, 0.0, 0.0);
 
-        res.e[0] = self.e[0] * rhs.e[0];
-        res.e[1] = self.e[1] * rhs.e[1];
-        res.e[2] = self.e[2] * rhs.e[2];
+        res.0 = self.0 * rhs.0;
+        res.1 = self.1 * rhs.1;
+        res.2 = self.2 * rhs.2;
 
         res
     }
@@ -94,13 +84,11 @@ impl Mul for Vec3 {
 
 impl Mul<Vec3> for f64 {
     fn mul(self, rhs: Vec3) -> Self::Output {
-        let mut res = Vec3 {
-            e: [0.0, 0.0, 0.0]
-        };
+        let mut res = Vec3(0.0, 0.0, 0.0);
 
-        res.e[0] = self * rhs.e[0];
-        res.e[1] = self * rhs.e[1];
-        res.e[2] = self * rhs.e[2];
+        res.0 = self * rhs.0;
+        res.1 = self * rhs.1;
+        res.2 = self * rhs.2;
 
         res
     }
@@ -111,13 +99,11 @@ impl Mul<Vec3> for f64 {
 
 impl Div for Vec3 {
     fn div(self, rhs: Self) -> Self::Output {
-        let mut res = Vec3 {
-            e: [0.0, 0.0, 0.0]
-        };
+        let mut res = Vec3(0.0, 0.0, 0.0);
 
-        res.e[0] = self.e[0] / rhs.e[0];
-        res.e[1] = self.e[1] / rhs.e[1];
-        res.e[2] = self.e[2] / rhs.e[2];
+        res.0 = self.0 / rhs.0;
+        res.1 = self.1 / rhs.1;
+        res.2 = self.2 / rhs.2;
 
         res
     }
@@ -127,13 +113,11 @@ impl Div for Vec3 {
 
 impl Div<f64> for Vec3 {
     fn div(self, rhs: f64) -> Self::Output {
-        let mut res = Vec3 {
-            e: [0.0, 0.0, 0.0]
-        };
+        let mut res = Vec3(0.0, 0.0, 0.0);
 
-        res.e[0] = self.e[0] / rhs;
-        res.e[1] = self.e[1] / rhs;
-        res.e[2] = self.e[2] / rhs;
+        res.0 = self.0 / rhs;
+        res.1 = self.1 / rhs;
+        res.2 = self.2 / rhs;
 
         res
     }
@@ -143,26 +127,12 @@ impl Div<f64> for Vec3 {
 
 impl PartialEq for Vec3 {
     fn eq(&self, other: &Self) -> bool {
-        if self.e[0] == other.e[0] && self.e[1] == other.e[1] && self.e[2] == other.e[2] {
+        if self.0 == other.0 && self.1 == other.1 && self.2 == other.2 {
             return true;
         }
         else {
             return false;
         };
-    }
-}
-
-impl Index<usize> for Vec3 {
-    fn index(&self, index: usize) -> &Self::Output {
-        return &(self.e[index]);
-    }
-
-    type Output = f64;
-}
-
-impl IndexMut<usize> for Vec3 {
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        return &mut (self.e[index]);
     }
 }
 
@@ -176,92 +146,61 @@ mod tests {
 
     #[test]
     fn sum() {
-        let v1 = Vec3{
-            e: [2.0, 6.0, 9.0],
-        };
+        let v1 = Vec3(2.0, 6.0, 9.0);
 
-        let v2 = Vec3{
-            e: [1.0, 1.0, 1.0],
-        };
+        let v2 = Vec3(1.0, 1.0, 1.0);
 
         let v3 = v1 + v2;
 
-        assert_eq!(v3.e, [3.0, 7.0, 10.0]);
-        assert_eq!(v3.e, [3.0, 7.0, 10.0]);
+        assert_eq!(v3, Vec3(3.0, 7.0, 10.0));
+        assert_eq!(v3, Vec3(3.0, 7.0, 10.0));
     }
 
 
     #[test]
     fn sub() {
-        let v1 = Vec3{
-            e: [2.0, 6.0, 9.0],
-        };
+        let v1 = Vec3(2.0, 6.0, 9.0);
 
-        let v2 = Vec3{
-            e: [1.0, 1.0, 1.0],
-        };
+        let v2 = Vec3(1.0, 1.0, 1.0);
 
         let v3 = v1 - v2;
 
-        assert_eq!(v3.e, [1.0, 5.0, 8.0]);
+        assert_eq!(v3, Vec3(1.0, 5.0, 8.0));
     }
 
 
     #[test]
     fn mul() {
-        let v1 = Vec3{
-            e: [2.0, 6.0, 9.0],
-        };
+        let v1 = Vec3(2.0, 6.0, 9.0);
 
-        let v2 = Vec3{
-            e: [1.0, 1.5, 2.0],
-        };
+        let v2 = Vec3(1.0, 1.5, 2.0);
 
         let v3 = v1 * v2;
         let v4 = 1.5 * v3.clone();
 
-        assert_eq!(v3.e, [2.0, 9.0, 18.0]);
-        assert_eq!(v4.e, [3.0, 13.5, 27.0]);
+        assert_eq!(v3, Vec3(2.0, 9.0, 18.0));
+        assert_eq!(v4, Vec3(3.0, 13.5, 27.0));
     }
 
 
     #[test]
     fn div() {
-        let v1 = Vec3{
-            e: [2.0, 6.0, 9.0],
-        };
+        let v1 = Vec3(2.0, 6.0, 9.0);
 
-        let v2 = Vec3{
-            e: [2.0, 2.0, 2.0],
-        };
+        let v2 = Vec3(2.0, 2.0, 2.0);
 
         let v3 = v1 / v2;
         let v4 = v3.clone() / 2.0;
 
-        assert_eq!(v3.e, [1.0, 3.0, 4.5]);
-        assert_eq!(v4.e, [0.5, 1.5, 2.25]);
-    }
-
-    #[test]
-    fn index() {
-        let v1 = Vec3 {
-            e: [1.5, 3.6, 6.8]
-        };
-
-        let i = 2;
-
-        assert_eq!(v1[i], v1.e[i])
+        assert_eq!(v3, Vec3(1.0, 3.0, 4.5));
+        assert_eq!(v4, Vec3(0.5, 1.5, 2.25));
     }
 
     #[test]
     fn dot() {
-        let v1 = Vec3 {
-            e: [1.5, 0.6, 1.2]
-        };
+        let v1 = Vec3(1.5, 0.6, 1.2);
 
-        let v2 = Vec3 {
-            e: [1.0, 2.5, 2.2]
-        };
+        let v2 = Vec3(1.0, 2.5, 2.2);
 
         assert_float_absolute_eq!(v1.dot(v2), 5.64) 
     }
@@ -269,13 +208,9 @@ mod tests {
 
     #[test]
     fn cross() {
-        let v1 = Vec3 {
-            e: [1.5, 0.6, 1.2]
-        };
+        let v1 = Vec3(1.5, 0.6, 1.2);
 
-        let v2 = Vec3 {
-            e: [1.0, 2.5, 2.2]
-        };
+        let v2 = Vec3(1.0, 2.5, 2.2);
 
         let v3 = v1.cross(v2);
 
@@ -286,15 +221,13 @@ mod tests {
 
     #[test]
     fn unit_vector() {
-        let v1 = Vec3 {
-            e: [1.2, 2.0, 0.5]
-        };
+        let v1 = Vec3(1.2, 2.0, 0.5);
 
         let unit = v1.unit();
 
-        assert_float_absolute_eq!(unit.e[0], 0.503066);
-        assert_float_absolute_eq!(unit.e[1], 0.838444);
-        assert_float_absolute_eq!(unit.e[2], 0.209611);
+        assert_float_absolute_eq!(unit.0, 0.503066);
+        assert_float_absolute_eq!(unit.1, 0.838444);
+        assert_float_absolute_eq!(unit.2, 0.209611);
 
     }
 }
