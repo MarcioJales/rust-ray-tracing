@@ -22,27 +22,19 @@ fn main() {
     let focal_length = 1.0;
     let viewport_height = 2.0;
     let viewport_width = viewport_height * (image_width as f64 / image_height as f64);
-    let camera_center = Vec3 {
-        e: [0.0, 0.0, 0.0]
-    };
+    let camera_center = Vec3(0.0, 0.0, 0.0);
 
     // Calculate the vectors across the horizontal and down the vertical viewport edges.
-    let viewport_u = Vec3 {
-        e: [viewport_width, 0.0, 0.0]
-    };
+    let viewport_u = Vec3(viewport_width, 0.0, 0.0);
 
-    let viewport_v = Vec3 {
-        e: [0.0, -viewport_height, 0.0]
-    };
+    let viewport_v = Vec3(0.0, -viewport_height, 0.0);
 
     // Calculate the horizontal and vertical delta vectors from pixel to pixel.
     let pixel_delta_u = viewport_u / image_width as f64;
     let pixel_delta_v = viewport_v / image_height as f64;
 
     // Calculate the location of the upper left pixel.
-    let focal_length_vector = Vec3 {
-        e: [0.0, 0.0, focal_length]
-    };
+    let focal_length_vector = Vec3(0.0, 0.0, focal_length);
 
     let viewport_upper_left = camera_center - focal_length_vector - viewport_u / 2.0 - viewport_v / 2.0;
     let pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v) / 2.0;
@@ -93,24 +85,18 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
 }
 
 fn ray_color(r: Ray) -> Vec3 {
-    let hit = hit_sphere(Vec3 { e: [0.0, 0.0, -1.0] }, 0.5, r);
+    let hit = hit_sphere(Vec3(0.0, 0.0, -1.0), 0.5, r);
     if hit == true {
-        return Vec3 {
-            e: [1.0, 0.7, 0.0]
-        };
+        return Vec3(1.0, 0.7, 0.0);
     }
 
     let unit_direction = r.direction().unit();
     let a = 0.5 * (unit_direction.y() + 1.0);
 
     // Calculate the "lerp". a = 1, color = blue. a = 0, color = blue
-    let white = Vec3 {
-        e: [1.0, 1.0, 1.0]
-    };
+    let white = Vec3(1.0, 1.0, 1.0);
 
-    let blue = Vec3 {
-        e: [0.5, 0.7, 1.0]
-    };
+    let blue = Vec3(0.5, 0.7, 1.0);
 
     let blended_value = (1.0 - a) * white + a * blue;
     blended_value
