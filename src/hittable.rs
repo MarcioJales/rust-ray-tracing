@@ -4,7 +4,27 @@ use crate::Ray;
 pub struct HitRecord {
     pub point: Vec3,
     pub normal: Vec3,
-    pub t: f64
+    pub t: f64,
+    pub front_face: bool,
+}
+
+impl HitRecord {
+    /* 
+    ** The normal vector points against the ray. 
+    ** In this case, rays that are inside the sphere must have the normal = -outward_normal 
+    */
+   pub fn set_face_normal(&mut self, ray: Ray, outward_normal: Vec3) {
+
+        // Sets the hit record normal vector.
+        // NOTE: the parameter `outward_normal` is assumed to have unit length.
+        self.front_face = ray.direction().dot(outward_normal) < 0.0;
+        if let true = self.front_face {
+            self.normal = outward_normal;
+        }
+        else {
+            self.normal = -1.0 * outward_normal;
+        }
+    }
 }
 
 pub trait Hittable {
