@@ -106,22 +106,3 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
 
     writeln!(f, "{} {} {}", rbyte, gbyte, bbyte).unwrap();
 }
-
-/* More about "impl Trait": https://doc.rust-lang.org/reference/types/impl-trait.html */
-fn ray_color<T: Hittable>(r: Ray, world: &T) -> Vec3 {
-    let mut hit_record: HitRecord = Default::default();
-    if world.hit(r, Interval(0.0, INFINITY), &mut hit_record) {
-        return 0.5 * (hit_record.normal + Vec3(1.0, 1.0, 1.0))
-    }
-
-    let unit_direction = r.direction().unit();
-    let a = 0.5 * (unit_direction.y() + 1.0);
-
-    // Calculate the "lerp". a = 1, color = blue. a = 0, color = blue
-    let white = Vec3(1.0, 1.0, 1.0);
-
-    let blue = Vec3(0.5, 0.7, 1.0);
-
-    let blended_value = (1.0 - a) * white + a * blue;
-    blended_value
-} 
