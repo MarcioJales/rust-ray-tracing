@@ -7,6 +7,7 @@ mod ray;
 mod hittable; 
 mod sphere;
 mod interval;
+mod camera;
 
 use hittable::{HitRecord, Hittable, HittableList};
 use interval::Interval;
