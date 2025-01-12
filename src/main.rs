@@ -1,3 +1,4 @@
+use std::f64::INFINITY;
 use std::{fs::File, rc::Rc};
 use std::io::Write;
 
@@ -5,8 +6,10 @@ mod vec3;
 mod ray;
 mod hittable; 
 mod sphere;
+mod interval;
 
 use hittable::{HitRecord, Hittable, HittableList};
+use interval::Interval;
 use sphere::Sphere;
 use vec3::Vec3;
 use ray::Ray;
@@ -106,7 +109,7 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
 /* More about "impl Trait": https://doc.rust-lang.org/reference/types/impl-trait.html */
 fn ray_color<T: Hittable>(r: Ray, world: &T) -> Vec3 {
     let mut hit_record: HitRecord = Default::default();
-    if world.hit(r, 0.0, f64::INFINITY, &mut hit_record) {
+    if world.hit(r, Interval(0.0, INFINITY), &mut hit_record) {
         return 0.5 * (hit_record.normal + Vec3(1.0, 1.0, 1.0))
     }
 
