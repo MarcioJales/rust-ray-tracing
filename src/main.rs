@@ -1,9 +1,16 @@
-use std::fs::File;
+use std::f64::INFINITY;
+use std::{fs::File, rc::Rc};
 use std::io::Write;
 
 mod vec3;
 mod ray;
+mod hittable; 
+mod sphere;
+mod interval;
 
+use hittable::{HitRecord, Hittable, HittableList};
+use interval::Interval;
+use sphere::Sphere;
 use vec3::Vec3;
 use ray::Ray;
 
@@ -17,6 +24,21 @@ fn main() {
 
     // Calculate the image height, and ensure that it's at least 1.
     let image_height = ((image_width as f64 / aspect_ratio) as i64).max(1);
+
+    // World
+    let mut world: HittableList = Default::default();
+    world.add(Rc::new(
+        Sphere {
+            center: Vec3(0.0, 0.0, -1.0),
+            radius: 0.5
+        }
+    ));
+    world.add(Rc::new(
+        Sphere {
+            center: Vec3(0.0, -100.5, -1.0),
+            radius: 100.0
+        }
+    ));
 
     // Camera definitions 
     let focal_length = 1.0;
@@ -59,7 +81,7 @@ fn main() {
                 dir: ray_direction
             };
 
-            let pixel_color = ray_color(ray);
+            let pixel_color = ray_color(ray, &world);
 
             write_color(pixel_color, &mut f);
 
@@ -84,10 +106,11 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
     writeln!(f, "{} {} {}", rbyte, gbyte, bbyte).unwrap();
 }
 
-fn ray_color(r: Ray) -> Vec3 {
-    let hit = hit_sphere(Vec3(0.0, 0.0, -1.0), 0.5, r);
-    if hit == true {
-        return Vec3(1.0, 0.7, 0.0);
+/* More about "impl Trait": https://doc.rust-lang.org/reference/types/impl-trait.html */
+fn ray_color<T: Hittable>(r: Ray, world: &T) -> Vec3 {
+    let mut hit_record: HitRecord = Default::default();
+    if world.hit(r, Interval(0.0, INFINITY), &mut hit_record) {
+        return 0.5 * (hit_record.normal + Vec3(1.0, 1.0, 1.0))
     }
 
     let unit_direction = r.direction().unit();
@@ -101,19 +124,3 @@ fn ray_color(r: Ray) -> Vec3 {
     let blended_value = (1.0 - a) * white + a * blue;
     blended_value
 } 
-
-/* The sphere equation is quadritic on the ray variable "t"
-** Based on that, the a, b and c from Bhaskara are
-** a = ray_direction * ray_direction
-** b = -2 * ray_direction * (sphere_center - ray_origin)
-** c = (sphere_center - ray_origin) * (sphere_center - ray_origin) - sphere_radius^2
- */
-fn hit_sphere(center: Vec3, radius: f64, ray: Ray) -> bool {
-    let orig_to_center = center - ray.origin();
-    let a = ray.direction().dot(ray.direction());
-    let b = -2.0 * ray.direction().dot(orig_to_center);
-    let c = orig_to_center.dot(orig_to_center) - radius*radius;
-    let discriminant = b * b - 4.0 * a * c;
-
-    return discriminant >= 0.0;
-}

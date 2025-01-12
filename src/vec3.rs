@@ -1,6 +1,6 @@
 use std::ops::{Add, Mul, Sub, Div};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct Vec3(pub f64, pub f64, pub f64);
 
 impl Vec3 {
