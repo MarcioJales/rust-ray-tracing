@@ -1,4 +1,3 @@
-use std::default;
 use std::rc::Rc;
 
 use crate::Vec3;
