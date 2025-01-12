@@ -3,17 +3,21 @@ use crate::{Interval, INFINITY};
 use crate::Vec3;
 use crate::Ray;
 
-struct Camera;
+pub struct Camera {
+    pub aspect_ratio: f64,
+    pub image_width: i64
+}
 
 impl Camera {
     pub fn render<T: Hittable>(world: &T) {
 
     }
 
-    fn initialize() {
-
+    fn initialize(&mut self) {
+        self.aspect_ratio = 16.0/9.0;
+        self.image_width = 400;
     }
-    
+
     fn ray_color<T: Hittable>(r: Ray, world: &T) -> Vec3 {
         let mut hit_record: HitRecord = Default::default();
         if world.hit(r, Interval(0.0, INFINITY), &mut hit_record) {
