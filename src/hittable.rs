@@ -1,9 +1,10 @@
+use std::default;
 use std::rc::Rc;
 
 use crate::Vec3;
 use crate::Ray;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HitRecord {
     pub point: Vec3,
     pub normal: Vec3,
@@ -50,12 +51,7 @@ impl HittableList {
 
 impl Hittable for HittableList {
     fn hit(&self, ray: Ray, ray_tmin: f64, ray_tmax: f64, hit_record: &mut HitRecord ) -> bool {
-        let mut temp_rec = HitRecord {
-            point: Vec3(0.0, 0.0, 0.0),
-            normal: Vec3(0.0, 0.0, 0.0),
-            t: 0.0,
-            front_face: false
-        };
+        let mut temp_rec: HitRecord = Default::default();
         let mut hit_anything = false;
         let mut closest_so_far = ray_tmax;
 
