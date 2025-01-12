@@ -56,7 +56,7 @@ impl Hittable for HittableList {
             t: 0.0,
             front_face: false
         };
-        let mut hit_anything: bool;
+        let mut hit_anything = false;
         let mut closest_so_far = ray_tmax;
 
         for object in &self.objects {
