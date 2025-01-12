@@ -21,6 +21,31 @@ impl Camera {
     fn initialize(&mut self) {
         self.aspect_ratio = 16.0/9.0;
         self.image_width = 400;
+
+        // Calculate the image height, and ensure that it's at least 1.
+        self.image_height = ((self.image_width as f64 / self.aspect_ratio) as i64).max(1);
+
+        // Camera definitions 
+        let focal_length = 1.0;
+        let viewport_height = 2.0;
+        let viewport_width = viewport_height * (self.image_width as f64 / self.image_height as f64);
+        self.camera_center = Vec3(0.0, 0.0, 0.0);
+
+        // Calculate the vectors across the horizontal and down the vertical viewport edges.
+        let viewport_u = Vec3(viewport_width, 0.0, 0.0);
+
+        let viewport_v = Vec3(0.0, -viewport_height, 0.0);
+
+        // Calculate the horizontal and vertical delta vectors from pixel to pixel.
+        self.pixel_delta_u = viewport_u / self.image_width as f64;
+        self.pixel_delta_v = viewport_v / self.image_height as f64;
+
+        // Calculate the location of the upper left pixel.
+        let focal_length_vector = Vec3(0.0, 0.0, focal_length);
+
+        let viewport_upper_left = self.camera_center - focal_length_vector - viewport_u / 2.0 - viewport_v / 2.0;
+        self.pixel00_loc = viewport_upper_left + (self.pixel_delta_u + self.pixel_delta_v) / 2.0;
+    
     }
 
     fn ray_color<T: Hittable>(r: Ray, world: &T) -> Vec3 {
