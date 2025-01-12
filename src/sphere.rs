@@ -9,6 +9,17 @@ pub struct Sphere {
 }
 
 impl Hittable for Sphere {
+    /* 
+    ** The sphere equation is quadritic on the ray variable "t"
+    ** Based on that, the a, b and c from Bhaskara are
+    ** a = ray_direction * ray_direction
+    ** b = -2 * ray_direction * (sphere_center - ray_origin)
+    ** c = (sphere_center - ray_origin) * (sphere_center - ray_origin) - sphere_radius^2
+    */
+
+    /* 
+    ** Section 6.2 proposes a quick simplification of the code that I didn't do
+    */
     fn hit(&self, ray: Ray, ray_tmin: f64, ray_tmax: f64, hit_record: &mut HitRecord ) -> bool {
         let orig_to_center = self.center - ray.origin();
         let a = ray.direction().dot(ray.direction());

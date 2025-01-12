@@ -6,6 +6,7 @@ mod ray;
 mod hittable; 
 mod sphere;
 
+use hittable::{HitRecord, Hittable, HittableList};
 use vec3::Vec3;
 use ray::Ray;
 
@@ -86,13 +87,11 @@ fn write_color(pixel_color: Vec3, f: &mut File) {
     writeln!(f, "{} {} {}", rbyte, gbyte, bbyte).unwrap();
 }
 
-fn ray_color(r: Ray) -> Vec3 {
-    let center = Vec3(0.0, 0.0, -1.0);
-
-    let hit = hit_sphere(center, 0.5, r);
-    if hit > 0.0 {
-        let normal = (r.at(hit) - center).unit();
-        return 0.5 * Vec3(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0);
+/* More about "impl Trait": https://doc.rust-lang.org/reference/types/impl-trait.html */
+fn ray_color<T: Hittable>(r: Ray, world: T) -> Vec3 {
+    let mut hit_record: HitRecord = Default::default();
+    if world.hit(r, 0.0, f64::INFINITY, &mut hit_record) {
+        return 0.5 * (hit_record.normal + Vec3(1.0, 1.0, 1.0))
     }
 
     let unit_direction = r.direction().unit();
@@ -106,29 +105,3 @@ fn ray_color(r: Ray) -> Vec3 {
     let blended_value = (1.0 - a) * white + a * blue;
     blended_value
 } 
-
-/* 
-** The sphere equation is quadritic on the ray variable "t"
-** Based on that, the a, b and c from Bhaskara are
-** a = ray_direction * ray_direction
-** b = -2 * ray_direction * (sphere_center - ray_origin)
-** c = (sphere_center - ray_origin) * (sphere_center - ray_origin) - sphere_radius^2
- */
-
-/* 
-** Section 6.2 proposes a quick simplification of the code that I didn't do
- */
-fn hit_sphere(center: Vec3, radius: f64, ray: Ray) -> f64 {
-    let orig_to_center = center - ray.origin();
-    let a = ray.direction().dot(ray.direction());
-    let b = -2.0 * ray.direction().dot(orig_to_center);
-    let c = orig_to_center.dot(orig_to_center) - radius*radius;
-    let discriminant = b * b - 4.0 * a * c;
-
-    if discriminant < 0.0 {
-        return -1.0;
-    } 
-    else {
-        return (-b - discriminant.sqrt()) / (2.0 * a);
-    }
-}
