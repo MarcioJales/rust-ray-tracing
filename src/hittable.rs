@@ -34,16 +34,17 @@ pub trait Hittable {
     fn hit(&self, ray: Ray, ray_tmin: f64, ray_tmax: f64, hit_record: &mut HitRecord ) -> bool;
 }
 
+#[derive(Default)]
 pub struct HittableList {
     objects: Vec<Rc<dyn Hittable>>
 }
 
 impl HittableList {
-    fn add(&mut self, object: Rc<dyn Hittable>) {
+    pub fn add(&mut self, object: Rc<dyn Hittable>) {
         self.objects.push(object);
     }
 
-    fn clear(&mut self) {
+    pub fn clear(&mut self) {
         self.objects.clear();
     }
 }
