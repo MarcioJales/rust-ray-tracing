@@ -5,7 +5,12 @@ use crate::Ray;
 
 pub struct Camera {
     pub aspect_ratio: f64,
-    pub image_width: i64
+    pub image_width: i64,
+    image_height: i64,
+    camera_center: Vec3,
+    pixel_delta_u: Vec3,
+    pixel_delta_v: Vec3,
+    pixel00_loc: Vec3
 }
 
 impl Camera {
