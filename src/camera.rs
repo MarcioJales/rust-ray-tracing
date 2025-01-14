@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::Write;
+use rand::Rng;
 
 use crate::{Hittable, HitRecord};
 use crate::{Interval, INFINITY};
@@ -10,11 +11,13 @@ use crate::Ray;
 pub struct Camera {
     pub aspect_ratio: f64,
     pub image_width: i64,
+    pub samples_per_pixel: u32,
     image_height: i64,
     camera_center: Vec3,
     pixel_delta_u: Vec3,
     pixel_delta_v: Vec3,
-    pixel00_loc: Vec3
+    pixel00_loc: Vec3,
+    pixel_samples_scale: f64
 }
 
 impl Camera {
@@ -31,16 +34,13 @@ impl Camera {
             i = 0;
             println!("\rScanlines remaining: {}", self.image_height - j);
             while i < self.image_width {
-                let pixel_center = self.pixel00_loc + (i as f64 * self.pixel_delta_u) + (j as f64 * self.pixel_delta_v);
-                let ray_direction = pixel_center - self.camera_center;
-                let ray = Ray{
-                    orig: self.camera_center,
-                    dir: ray_direction
-                };
-    
-                let pixel_color = Self::ray_color(ray, &world);
-    
-                Self::write_color(pixel_color, &mut f);
+                let mut pixel_color = Vec3(0.0, 0.0, 0.0);
+                for _sample in 0..self.samples_per_pixel {
+                    let ray = self.get_ray(i, j);
+                    pixel_color = pixel_color + Self::ray_color(ray, &world);
+                }
+
+                Self::write_color(self.pixel_samples_scale * pixel_color, &mut f);
     
                 i += 1;
             }
@@ -60,6 +60,9 @@ impl Camera {
         let viewport_height = 2.0;
         let viewport_width = viewport_height * (self.image_width as f64 / self.image_height as f64);
         self.camera_center = Vec3(0.0, 0.0, 0.0);
+
+        /* Weight for antialiasing */
+        self.pixel_samples_scale = 1.0 / self.samples_per_pixel as f64;
 
         // Calculate the vectors across the horizontal and down the vertical viewport edges.
         let viewport_u = Vec3(viewport_width, 0.0, 0.0);
@@ -102,10 +105,32 @@ impl Camera {
         let b = pixel_color.z();
     
         // Translate the [0,1] component values to the byte range [0,255].
-        let rbyte = (255.999 * r) as i64;
-        let gbyte = (255.999 * g) as i64;
-        let bbyte = (255.999 * b) as i64;
+        let intensity = Interval(0.000, 0.999);
+        let rbyte = (255.999 * intensity.clamp(r)) as i64;
+        let gbyte = (255.999 * intensity.clamp(g)) as i64;
+        let bbyte = (255.999 * intensity.clamp(b)) as i64;
     
         writeln!(f, "{} {} {}", rbyte, gbyte, bbyte).unwrap();
+    }
+
+    // Construct a camera ray originating from the origin and directed at randomly sampled
+    // point around the pixel location i, j.
+    fn get_ray(&self, i: i64, j: i64) -> Ray {
+        /* Rand ref:
+        ** https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html#generate-random-numbers-within-a-range
+        */
+        let mut rng = rand::thread_rng();
+        let offset = Vec3(rng.gen_range(0.0..1.0) - 0.5, rng.gen_range(0.0..1.0) - 0.5, 0.0);
+
+        let pixel_sample = self.pixel00_loc 
+                                + ((i as f64 + offset.x()) * self.pixel_delta_u)
+                                + ((j as f64 + offset.y()) * self.pixel_delta_v);
+        let ray_origin = self.camera_center;
+        let ray_direction = pixel_sample - ray_origin;
+
+        Ray {
+            orig: ray_origin,
+            dir: ray_direction
+        }
     }
 }
