@@ -102,9 +102,10 @@ impl Camera {
         let b = pixel_color.z();
     
         // Translate the [0,1] component values to the byte range [0,255].
-        let rbyte = (255.999 * r) as i64;
-        let gbyte = (255.999 * g) as i64;
-        let bbyte = (255.999 * b) as i64;
+        let intensity = Interval(0.000, 0.999);
+        let rbyte = (255.999 * intensity.clamp(r)) as i64;
+        let gbyte = (255.999 * intensity.clamp(g)) as i64;
+        let bbyte = (255.999 * intensity.clamp(b)) as i64;
     
         writeln!(f, "{} {} {}", rbyte, gbyte, bbyte).unwrap();
     }
