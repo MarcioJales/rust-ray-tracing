@@ -1,4 +1,4 @@
-use std::ops::{Add, Mul, Sub, Div};
+use std::{cell::Ref, ops::{Add, Div, Mul, Sub}};
 use crate::random::{random, random_within};
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -45,6 +45,23 @@ impl Vec3 {
 
     fn reflect_within(min: f64, max: f64) -> Vec3 {
         Vec3(random_within(min, max), random_within(min, max), random_within(min, max))
+    }
+
+    /* 
+    ** This method applies "rejection method":
+    ** If the reflected ray lies outside the valid sphere (radius = 1), we discard it and calculate again.
+    ** At the end, we normalize it.
+    ** On the discussion about why we discard rays outside the sphere:
+    ** https://github.com/RayTracing/raytracing.github.io/discussions/1369
+     */
+    fn reflect_unit() -> Vec3 {
+        loop {
+            let reflected = Self::reflect_within(-1.0, 1.0);
+            let len = reflected.length();
+            /* The first comparison is to handle a small floating-point abstraction leak */
+            if 1e-160 < len && len <= 1 {
+                return reflected / len;
+            }
     }
 }
 
