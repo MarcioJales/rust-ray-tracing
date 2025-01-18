@@ -1,4 +1,5 @@
 use std::ops::{Add, Mul, Sub, Div};
+use crate::random::{random, random_within};
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Vec3(pub f64, pub f64, pub f64);
@@ -36,6 +37,14 @@ impl Vec3 {
     pub fn unit(self) -> Vec3 {
         let length = self.length();
         self / length
+    }
+
+    fn reflect() -> Vec3 {
+        Vec3(random(), random(), random())
+    }
+
+    fn reflect_within(min: f64, max: f64) -> Vec3 {
+        Vec3(random_within(min, max), random_within(min, max), random_within(min, max))
     }
 }
 
