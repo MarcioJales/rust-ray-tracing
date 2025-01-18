@@ -1,6 +1,5 @@
 use std::f64::INFINITY;
 use std::{fs::File, rc::Rc};
-use std::io::Write;
 
 mod vec3;
 mod ray;
@@ -8,6 +7,7 @@ mod hittable;
 mod sphere;
 mod interval;
 mod camera;
+mod random;
 
 use camera::Camera;
 use hittable::{HitRecord, Hittable, HittableList};

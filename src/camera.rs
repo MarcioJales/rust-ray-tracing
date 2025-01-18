@@ -1,11 +1,11 @@
 use std::fs::File;
 use std::io::Write;
-use rand::Rng;
 
 use crate::{Hittable, HitRecord};
 use crate::{Interval, INFINITY};
 use crate::Vec3;
 use crate::Ray;
+use crate::random::random;
 
 #[derive(Default)]
 pub struct Camera {
@@ -116,11 +116,7 @@ impl Camera {
     // Construct a camera ray originating from the origin and directed at randomly sampled
     // point around the pixel location i, j.
     fn get_ray(&self, i: i64, j: i64) -> Ray {
-        /* Rand ref:
-        ** https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html#generate-random-numbers-within-a-range
-        */
-        let mut rng = rand::thread_rng();
-        let offset = Vec3(rng.gen_range(0.0..1.0) - 0.5, rng.gen_range(0.0..1.0) - 0.5, 0.0);
+        let offset = Vec3(random() - 0.5, random() - 0.5, 0.0);
 
         let pixel_sample = self.pixel00_loc 
                                 + ((i as f64 + offset.x()) * self.pixel_delta_u)
