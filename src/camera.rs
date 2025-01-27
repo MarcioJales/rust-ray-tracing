@@ -89,7 +89,11 @@ impl Camera {
         }
 
         let mut hit_record: HitRecord = Default::default();
-        if world.hit(r, Interval(0.0, INFINITY), &mut hit_record) {
+        /* Use 0.0001 instead of 0.0 to prevent shadow acne (when float approximation makes a ray reflect slightly off)
+        ** Someone brought a discussion about this possibly being wrong:
+        ** https://github.com/RayTracing/raytracing.github.io/discussions/1296
+         */
+        if world.hit(r, Interval(0.0001, INFINITY), &mut hit_record) {
             let direction = Vec3::random_on_hemisphere(&hit_record.normal);
             return 0.8 * Self::ray_color(Ray { orig: hit_record.point, dir: direction}, depth - 1, world)
         }
