@@ -1,17 +1,18 @@
 use std::fs::File;
 use std::io::Write;
-use rand::Rng;
 
 use crate::{Hittable, HitRecord};
 use crate::{Interval, INFINITY};
 use crate::Vec3;
 use crate::Ray;
+use crate::random::random;
 
 #[derive(Default)]
 pub struct Camera {
     pub aspect_ratio: f64,
     pub image_width: i64,
     pub samples_per_pixel: u32,
+    pub max_depth: u32, // Max number of bounces of a ray into scene
     image_height: i64,
     camera_center: Vec3,
     pixel_delta_u: Vec3,
@@ -37,7 +38,7 @@ impl Camera {
                 let mut pixel_color = Vec3(0.0, 0.0, 0.0);
                 for _sample in 0..self.samples_per_pixel {
                     let ray = self.get_ray(i, j);
-                    pixel_color = pixel_color + Self::ray_color(ray, &world);
+                    pixel_color = pixel_color + Self::ray_color(ray, self.max_depth, &world);
                 }
 
                 Self::write_color(self.pixel_samples_scale * pixel_color, &mut f);
@@ -81,10 +82,24 @@ impl Camera {
     
     }
 
-    fn ray_color<T: Hittable>(r: Ray, world: &T) -> Vec3 {
+    fn ray_color<T: Hittable>(r: Ray, depth: u32, world: &T) -> Vec3 {
+        // If we've exceeded the ray bounce limit, no more light is gathered.
+        if depth <= 0 {
+            return Vec3(0.0, 0.0, 0.0);
+        }
+
         let mut hit_record: HitRecord = Default::default();
-        if world.hit(r, Interval(0.0, INFINITY), &mut hit_record) {
-            return 0.5 * (hit_record.normal + Vec3(1.0, 1.0, 1.0))
+        /* Use 0.0001 instead of 0.0 to prevent shadow acne (when float approximation makes a ray reflect slightly off)
+        ** Someone brought a discussion about this possibly being wrong:
+        ** https://github.com/RayTracing/raytracing.github.io/discussions/1296
+         */
+        if world.hit(r, Interval(0.0001, INFINITY), &mut hit_record) {
+            /* Lambertian reflection. 
+            ** This is going to create a ray on the edge of the unit sphere tangent to intersecion point P and outward normal(i.e. center at P + N)
+            ** The smaller cos(x) from the normal, the higher probability of reflection.
+            */
+            let direction = hit_record.normal + Vec3::random_unit();
+            return 0.5 * Self::ray_color(Ray { orig: hit_record.point, dir: direction}, depth - 1, world)
         }
     
         let unit_direction = r.direction().unit();
@@ -103,6 +118,11 @@ impl Camera {
         let r = pixel_color.x();
         let g = pixel_color.y();
         let b = pixel_color.z();
+
+        // Apply a linear to gamma transform for gamma 2
+        let r = Self::linear_to_gamma(r);
+        let g = Self::linear_to_gamma(g);
+        let b = Self::linear_to_gamma(b);
     
         // Translate the [0,1] component values to the byte range [0,255].
         let intensity = Interval(0.000, 0.999);
@@ -116,11 +136,7 @@ impl Camera {
     // Construct a camera ray originating from the origin and directed at randomly sampled
     // point around the pixel location i, j.
     fn get_ray(&self, i: i64, j: i64) -> Ray {
-        /* Rand ref:
-        ** https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html#generate-random-numbers-within-a-range
-        */
-        let mut rng = rand::thread_rng();
-        let offset = Vec3(rng.gen_range(0.0..1.0) - 0.5, rng.gen_range(0.0..1.0) - 0.5, 0.0);
+        let offset = Vec3(random() - 0.5, random() - 0.5, 0.0);
 
         let pixel_sample = self.pixel00_loc 
                                 + ((i as f64 + offset.x()) * self.pixel_delta_u)
@@ -132,5 +148,16 @@ impl Camera {
             orig: ray_origin,
             dir: ray_direction
         }
+    }
+
+    /* Transform from "linear space"  to "gamma space, a collor correction commonly expected when storing images
+    ** This will represent color intensity more accurately
+    */
+    fn linear_to_gamma(linear_component: f64) -> f64 {
+        if linear_component > 0.0 { 
+            return linear_component.sqrt();
+        }
+
+        return 0.0;
     }
 }
