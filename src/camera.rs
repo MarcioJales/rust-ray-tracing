@@ -99,7 +99,7 @@ impl Camera {
             ** The smaller cos(x) from the normal, the higher probability of reflection.
             */
             let direction = hit_record.normal + Vec3::random_unit();
-            return 0.8 * Self::ray_color(Ray { orig: hit_record.point, dir: direction}, depth - 1, world)
+            return 0.5 * Self::ray_color(Ray { orig: hit_record.point, dir: direction}, depth - 1, world)
         }
     
         let unit_direction = r.direction().unit();
@@ -118,6 +118,11 @@ impl Camera {
         let r = pixel_color.x();
         let g = pixel_color.y();
         let b = pixel_color.z();
+
+        // Apply a linear to gamma transform for gamma 2
+        let r = Self::linear_to_gamma(r);
+        let g = Self::linear_to_gamma(g);
+        let b = Self::linear_to_gamma(b);
     
         // Translate the [0,1] component values to the byte range [0,255].
         let intensity = Interval(0.000, 0.999);
@@ -143,5 +148,16 @@ impl Camera {
             orig: ray_origin,
             dir: ray_direction
         }
+    }
+
+    /* Transform from "linear space"  to "gamma space, a collor correction commonly expected when storing images
+    ** This will represent color intensity more accurately
+    */
+    fn linear_to_gamma(linear_component: f64) -> f64 {
+        if linear_component > 0.0 { 
+            return linear_component.sqrt();
+        }
+
+        return 0.0;
     }
 }
