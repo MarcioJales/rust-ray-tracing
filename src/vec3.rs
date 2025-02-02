@@ -54,7 +54,7 @@ impl Vec3 {
     ** On the discussion about why we discard rays outside the sphere:
     ** https://github.com/RayTracing/raytracing.github.io/discussions/1369
      */
-    fn random_unit() -> Vec3 {
+    pub fn random_unit() -> Vec3 {
         loop {
             let reflected = Self::random_within(-1.0, 1.0);
             let len = reflected.length();
@@ -63,13 +63,6 @@ impl Vec3 {
                 return reflected / len;
             }
         }
-    }
-
-    /* Guarantees that the random vector is now on the right direction (the same as the hemisphere) */
-    pub fn random_on_hemisphere(normal: &Vec3) -> Vec3 {
-        let on_unit_sphere = Self::random_unit();
-        if on_unit_sphere.dot(*normal) > 0.0 { on_unit_sphere }
-        else { -1.0 * on_unit_sphere }
     }
 }
 
