@@ -5,13 +5,26 @@ use crate::Ray;
 use crate::material::Material;
 use crate::interval::Interval;
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct HitRecord {
     pub point: Vec3,
     pub normal: Vec3,
     pub t: f64,
     pub front_face: bool,
-    pub material: Rc<Material>,
+    pub material: Option<Rc<dyn Material>>
+}
+
+impl Default for HitRecord {
+    fn default() -> Self {
+        HitRecord {
+            point: Vec3::default(),
+            normal: Vec3::default(),
+            t: f64::default(),
+            front_face: bool::default(),
+            material: None
+        }
+    }
+    
 }
 
 impl HitRecord {

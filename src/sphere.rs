@@ -10,7 +10,7 @@ use crate::hittable::HitRecord;
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f64,
-    pub material: Rc<Material>
+    pub material: Rc<dyn Material>
 }
 
 impl Hittable for Sphere {
