@@ -2,6 +2,8 @@ use crate::Ray;
 use crate::HitRecord;
 use crate::Vec3;
 
+/* "Default" trait is necessary for the "Rc<Material> on the HitRecord" */
+#[derive(Default)]
 pub struct Material {
 }
 

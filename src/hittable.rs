@@ -2,6 +2,7 @@ use std::rc::Rc;
 
 use crate::Vec3;
 use crate::Ray;
+use crate::material::Material;
 use crate::interval::Interval;
 
 #[derive(Clone, Default)]
@@ -10,6 +11,7 @@ pub struct HitRecord {
     pub normal: Vec3,
     pub t: f64,
     pub front_face: bool,
+    pub material: Rc<Material>,
 }
 
 impl HitRecord {
