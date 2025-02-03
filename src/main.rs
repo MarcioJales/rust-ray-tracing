@@ -8,6 +8,7 @@ mod sphere;
 mod interval;
 mod camera;
 mod random;
+mod material;
 
 use camera::Camera;
 use hittable::{HitRecord, Hittable, HittableList};
