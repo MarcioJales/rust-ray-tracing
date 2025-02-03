@@ -1,12 +1,16 @@
+use std::rc::Rc;
+
 use crate::hittable::Hittable;
 use crate::interval::Interval;
+use crate::material::Material;
 use crate::Vec3;
 use crate::Ray;
 use crate::hittable::HitRecord;
 
 pub struct Sphere {
     pub center: Vec3,
-    pub radius: f64
+    pub radius: f64,
+    pub material: Rc<Material>
 }
 
 impl Hittable for Sphere {
@@ -45,6 +49,7 @@ impl Hittable for Sphere {
         hit_record.point = ray.at(hit_record.t);
         let outward_normal = (hit_record.point - self.center) / self.radius;
         hit_record.set_face_normal(ray, outward_normal);
+        hit_record.material = self.material.clone();
 
         return true;
     }
