@@ -14,7 +14,12 @@ pub struct Lambertian {
 
 impl Material for Lambertian {
     fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vec3)> {
-        let scatter_direction = hit_record.normal + Vec3::random_unit();
+        let mut scatter_direction = hit_record.normal + Vec3::random_unit();
+        // Catch degenerate scatter direction
+        if scatter_direction.near_zero() {
+            scatter_direction = hit_record.normal;
+        }
+
         let scattered = Ray {
             orig: hit_record.point,
             dir: scatter_direction

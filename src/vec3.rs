@@ -64,6 +64,12 @@ impl Vec3 {
             }
         }
     }
+
+    pub fn near_zero(self) -> bool {
+        // Return true if the vector is close to zero in all dimensions.
+        let s = 1e-8;
+        return (self.0.abs() < s) && (self.1.abs() < s) && (self.2.abs() < s) 
+    }
 }
 
 impl Add for Vec3 {
