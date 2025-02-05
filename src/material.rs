@@ -9,7 +9,7 @@ pub trait Material {
 }
 
 pub struct Lambertian {
-    albedo: Vec3
+    pub albedo: Vec3
 }
 
 impl Material for Lambertian {
@@ -31,7 +31,7 @@ impl Material for Lambertian {
 }
 
 pub struct Metal {
-    albedo: Vec3
+    pub albedo: Vec3
 }
 
 impl Material for Metal {
