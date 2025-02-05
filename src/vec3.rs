@@ -71,8 +71,9 @@ impl Vec3 {
         return (self.0.abs() < s) && (self.1.abs() < s) && (self.2.abs() < s) 
     }
 
-    pub fn reflect(inciding: &Vec3, normal: &Vec3) -> Vec3 {
-        return inciding - 2.0 * (inciding.dot(*normal) * normal);
+    /* Mirror reflection */
+    pub fn reflect(&self, normal: &Vec3) -> Vec3 {
+        return self - 2.0 * (self.dot(*normal) * normal);
     }
 
 }

@@ -29,3 +29,21 @@ impl Material for Lambertian {
         Some((scattered, attenuation))
     }
 }
+
+pub struct Metal {
+    albedo: Vec3
+}
+
+impl Material for Metal {
+    fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vec3)> {
+        let reflected_direction = ray_in.direction().reflect(&hit_record.normal);
+
+        let reflected = Ray {
+            orig: hit_record.point,
+            dir: reflected_direction
+        };
+        let attenuation = self.albedo;
+
+        Some((reflected, attenuation))
+    }
+}
