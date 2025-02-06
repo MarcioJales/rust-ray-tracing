@@ -94,12 +94,16 @@ impl Camera {
         ** https://github.com/RayTracing/raytracing.github.io/discussions/1296
          */
         if world.hit(r, Interval(0.0001, INFINITY), &mut hit_record) {
-            /* Lambertian reflection. 
-            ** This is going to create a ray on the edge of the unit sphere tangent to intersecion point P and outward normal(i.e. center at P + N)
-            ** The smaller cos(x) from the normal, the higher probability of reflection.
-            */
-            let direction = hit_record.normal + Vec3::random_unit();
-            return 0.5 * Self::ray_color(Ray { orig: hit_record.point, dir: direction}, depth - 1, world)
+            let mat = hit_record.material.clone().unwrap(); 
+
+            match mat.scatter(&r, &hit_record) {
+                Some((scattered,attenuation)) => {
+                    return attenuation * Self::ray_color(scattered, depth - 1, world)
+                }
+                None => {
+                    return Vec3(0.0, 0.0, 0.0)
+                }
+            }
         }
     
         let unit_direction = r.direction().unit();

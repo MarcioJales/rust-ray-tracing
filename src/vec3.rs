@@ -64,6 +64,18 @@ impl Vec3 {
             }
         }
     }
+
+    pub fn near_zero(self) -> bool {
+        // Return true if the vector is close to zero in all dimensions.
+        let s = 1e-8;
+        return (self.0.abs() < s) && (self.1.abs() < s) && (self.2.abs() < s) 
+    }
+
+    /* Mirror reflection */
+    pub fn reflect(&self, normal: &Vec3) -> Vec3 {
+        return self - 2.0 * (self.dot(*normal) * normal);
+    }
+
 }
 
 impl Add for Vec3 {
@@ -80,6 +92,48 @@ impl Add for Vec3 {
     type Output = Vec3;
 }
 
+impl Add for &Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: Self) -> Vec3 {
+        let mut res = Vec3(0.0, 0.0, 0.0);
+
+        res.0 = self.0 + rhs.0;
+        res.1 = self.1 + rhs.1;
+        res.2 = self.2 + rhs.2;
+
+        res
+    }
+}
+
+impl Add<Vec3> for &Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: Vec3) -> Vec3 {
+        let mut res = Vec3(0.0, 0.0, 0.0);
+
+        res.0 = self.0 + rhs.0;
+        res.1 = self.1 + rhs.1;
+        res.2 = self.2 + rhs.2;
+
+        res
+    }
+}
+
+impl Add<&Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: &Vec3) -> Vec3 {
+        let mut res = Vec3(0.0, 0.0, 0.0);
+
+        res.0 = self.0 + rhs.0;
+        res.1 = self.1 + rhs.1;
+        res.2 = self.2 + rhs.2;
+
+        res
+    }
+}
+
 impl Sub for Vec3 {
     fn sub(self, rhs: Self) -> Self::Output {
         let mut res = Vec3(0.0, 0.0, 0.0);
@@ -94,6 +148,47 @@ impl Sub for Vec3 {
     type Output = Vec3;
 }
 
+impl Sub for &Vec3 {
+    fn sub(self, rhs: Self) -> Self::Output {
+        let mut res = Vec3(0.0, 0.0, 0.0);
+
+        res.0 = self.0 - rhs.0;
+        res.1 = self.1 - rhs.1;
+        res.2 = self.2 - rhs.2;
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
+impl Sub<Vec3> for &Vec3 {
+    fn sub(self, rhs: Vec3) -> Self::Output {
+        let mut res = Vec3(0.0, 0.0, 0.0);
+
+        res.0 = self.0 - rhs.0;
+        res.1 = self.1 - rhs.1;
+        res.2 = self.2 - rhs.2;
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
+impl Sub<&Vec3> for Vec3 {
+    fn sub(self, rhs: &Vec3) -> Self::Output {
+        let mut res = Vec3(0.0, 0.0, 0.0);
+
+        res.0 = self.0 - rhs.0;
+        res.1 = self.1 - rhs.1;
+        res.2 = self.2 - rhs.2;
+
+        res
+    }
+
+    type Output = Vec3;
+}
 
 impl Mul for Vec3 {
     fn mul(self, rhs: Self) -> Self::Output {
@@ -109,6 +204,21 @@ impl Mul for Vec3 {
     type Output = Vec3;
 }
 
+impl Mul for &Vec3 {
+    fn mul(self, rhs: Self) -> Self::Output {
+        let mut res = Vec3(0.0, 0.0, 0.0);
+
+        res.0 = self.0 * rhs.0;
+        res.1 = self.1 * rhs.1;
+        res.2 = self.2 * rhs.2;
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
+
 impl Mul<Vec3> for f64 {
     fn mul(self, rhs: Vec3) -> Self::Output {
         let mut res = Vec3(0.0, 0.0, 0.0);
@@ -123,8 +233,36 @@ impl Mul<Vec3> for f64 {
     type Output = Vec3;
 }
 
+impl Mul<&Vec3> for f64 {
+    fn mul(self, rhs: &Vec3) -> Self::Output {
+        let mut res = Vec3(0.0, 0.0, 0.0);
+
+        res.0 = self * rhs.0;
+        res.1 = self * rhs.1;
+        res.2 = self * rhs.2;
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
 
 impl Div for Vec3 {
+    fn div(self, rhs: Self) -> Self::Output {
+        let mut res = Vec3(0.0, 0.0, 0.0);
+
+        res.0 = self.0 / rhs.0;
+        res.1 = self.1 / rhs.1;
+        res.2 = self.2 / rhs.2;
+
+        res
+    }
+
+    type Output = Vec3;
+}
+
+impl Div for &Vec3 {
     fn div(self, rhs: Self) -> Self::Output {
         let mut res = Vec3(0.0, 0.0, 0.0);
 
