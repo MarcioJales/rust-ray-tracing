@@ -94,9 +94,10 @@ impl Camera {
         ** https://github.com/RayTracing/raytracing.github.io/discussions/1296
          */
         if world.hit(r, Interval(0.0001, INFINITY), &mut hit_record) {
-            match hit_record.material {
-                Some(ref mat) => {
-                    let (scattered, attenuation) = mat.scatter(&r, &hit_record).unwrap();
+            let mat = hit_record.material.clone().unwrap(); 
+
+            match mat.scatter(&r, &hit_record) {
+                Some((scattered,attenuation)) => {
                     return attenuation * Self::ray_color(scattered, depth - 1, world)
                 }
                 None => {

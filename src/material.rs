@@ -31,19 +31,27 @@ impl Material for Lambertian {
 }
 
 pub struct Metal {
-    pub albedo: Vec3
+    pub albedo: Vec3,
+    pub fuzz: f64
 }
 
 impl Material for Metal {
     fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vec3)> {
         let reflected_direction = ray_in.direction().reflect(&hit_record.normal);
+        let fuzz_direction = reflected_direction.unit() + (self.fuzz * Vec3::random_unit());
 
-        let reflected = Ray {
-            orig: hit_record.point,
-            dir: reflected_direction
-        };
-        let attenuation = self.albedo;
+        if fuzz_direction.dot(hit_record.normal) > 0.0 {
+            let reflected = Ray {
+                orig: hit_record.point,
+                dir: fuzz_direction
+            };
+            let attenuation = self.albedo;
 
-        Some((reflected, attenuation))
+            Some((reflected, attenuation))
+        }
+        /* If the fuzz calculation goes inwards the material, we absorb it */
+        else {
+            return None;
+        }
     }
 }
