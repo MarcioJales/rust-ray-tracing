@@ -13,7 +13,7 @@ mod material;
 use camera::Camera;
 use hittable::{HitRecord, Hittable, HittableList};
 use interval::Interval;
-use material::{Lambertian, Metal};
+use material::{Dielectric, Lambertian, Metal};
 use sphere::Sphere;
 use vec3::Vec3;
 use ray::Ray;
@@ -38,9 +38,8 @@ fn main() {
     );
 
     let material_left = Rc::new(
-        Metal {
-            albedo: Vec3(0.8, 0.8, 0.8),
-            fuzz: 0.3
+        Dielectric {
+            refraction_index: 1.5
         }
     );
 

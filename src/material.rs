@@ -55,3 +55,30 @@ impl Material for Metal {
         }
     }
 }
+
+pub struct Dielectric {
+    pub refraction_index: f64
+}
+
+
+impl Material for Dielectric {
+    fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vec3)> {
+        let refracted;
+
+        if hit_record.front_face {
+            refracted = ray_in.direction().unit().refract(hit_record.normal, 1.0/self.refraction_index)
+        }
+        else {
+            refracted = ray_in.direction().unit().refract(hit_record.normal, self.refraction_index)
+        }
+
+        let scattered = Ray {
+            orig: hit_record.point,
+            dir: refracted
+        };
+
+        let attenuation = Vec3(1.0, 1.0, 1.0);
+
+        Some((scattered, attenuation))
+    }
+}
