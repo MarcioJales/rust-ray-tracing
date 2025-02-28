@@ -63,18 +63,28 @@ pub struct Dielectric {
 
 impl Material for Dielectric {
     fn scatter(&self, ray_in: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vec3)> {
-        let refracted;
+        let mut refraction_i = self.refraction_index;
 
         if hit_record.front_face {
-            refracted = ray_in.direction().unit().refract(hit_record.normal, 1.0/self.refraction_index)
+            refraction_i = 1.0/self.refraction_index;
+        }
+
+        let cos_in = (-ray_in.direction().dot(hit_record.normal)).min(1.0);
+        let sin_in = (1.0 - cos_in * cos_in).sqrt();
+
+        /* That is, the ray cannot refract, since the incident angle is too big in relation to the surface normal  */
+        let direction;
+        if refraction_i * sin_in > 1.0 {
+            /* reflect is borrowing the normal, while the refract isn't. It would be nice to make them the same way */
+            direction = ray_in.direction().unit().reflect(&hit_record.normal);
         }
         else {
-            refracted = ray_in.direction().unit().refract(hit_record.normal, self.refraction_index)
+            direction = ray_in.direction().unit().refract(hit_record.normal, refraction_i);
         }
 
         let scattered = Ray {
             orig: hit_record.point,
-            dir: refracted
+            dir: direction
         };
 
         let attenuation = Vec3(1.0, 1.0, 1.0);
