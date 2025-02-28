@@ -1,7 +1,7 @@
 use rand::Rng;
 
 pub fn random() -> f64 {
-        /* Rand ref:
+    /* Rand ref:
     ** https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html#generate-random-numbers-within-a-range
     */
     let mut rng = rand::thread_rng();
