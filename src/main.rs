@@ -43,6 +43,12 @@ fn main() {
         }
     );
 
+    let material_bubble = Rc::new(
+        Dielectric {
+            refraction_index: 1.00 / 1.50
+        }
+    );
+
     let material_right = Rc::new(
         Metal {
             albedo: Vec3(0.8, 0.6, 0.2),
@@ -69,6 +75,13 @@ fn main() {
             center: Vec3(-1.0, 0.0, -1.0),
             radius: 0.5,
             material: material_left
+        }
+    ));
+    world.add(Rc::new(
+        Sphere {
+            center: Vec3(-1.0, 0.0, -1.0),
+            radius: 0.4,
+            material: material_bubble
         }
     ));
     world.add(Rc::new(
