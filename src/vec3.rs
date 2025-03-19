@@ -76,6 +76,15 @@ impl Vec3 {
         return self - 2.0 * (self.dot(*normal) * normal);
     }
 
+    pub fn refract(&self, normal: Vec3, refraction_ratio: f64) -> Vec3 {
+        let cos_theta = -self.dot(normal).min(1.0);
+        let refracted_perpendicular = refraction_ratio * (self + cos_theta * normal);
+        /* The book has an "abs" around the subtraction, despite the book formular has not */
+        let refracted_paralell = - (1.0 - refracted_perpendicular.length().powi(2)).abs().sqrt() * normal;
+
+        return refracted_paralell + refracted_perpendicular;
+    }
+
 }
 
 impl Add for Vec3 {

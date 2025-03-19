@@ -13,7 +13,7 @@ mod material;
 use camera::Camera;
 use hittable::{HitRecord, Hittable, HittableList};
 use interval::Interval;
-use material::{Lambertian, Metal};
+use material::{Dielectric, Lambertian, Metal};
 use sphere::Sphere;
 use vec3::Vec3;
 use ray::Ray;
@@ -38,9 +38,14 @@ fn main() {
     );
 
     let material_left = Rc::new(
-        Metal {
-            albedo: Vec3(0.8, 0.8, 0.8),
-            fuzz: 0.3
+        Dielectric {
+            refraction_index: 1.5
+        }
+    );
+
+    let material_bubble = Rc::new(
+        Dielectric {
+            refraction_index: 1.00 / 1.50
         }
     );
 
@@ -70,6 +75,13 @@ fn main() {
             center: Vec3(-1.0, 0.0, -1.0),
             radius: 0.5,
             material: material_left
+        }
+    ));
+    world.add(Rc::new(
+        Sphere {
+            center: Vec3(-1.0, 0.0, -1.0),
+            radius: 0.4,
+            material: material_bubble
         }
     ));
     world.add(Rc::new(
