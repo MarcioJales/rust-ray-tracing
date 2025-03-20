@@ -13,6 +13,7 @@ pub struct Camera {
     pub image_width: i64,
     pub samples_per_pixel: u32,
     pub max_depth: u32, // Max number of bounces of a ray into scene
+    pub vfov: f64, // Vertical view angle (field of view)
     image_height: i64,
     camera_center: Vec3,
     pixel_delta_u: Vec3,
@@ -52,13 +53,15 @@ impl Camera {
     }
 
     fn initialize(&mut self) {
-
         // Calculate the image height, and ensure that it's at least 1.
         self.image_height = ((self.image_width as f64 / self.aspect_ratio) as i64).max(1);
 
         // Camera definitions 
         let focal_length = 1.0;
-        let viewport_height = 2.0;
+        let theta = self.vfov.to_radians();
+        /* The height calculated from the angle between the camera and the viewport */
+        let h = (theta / 2.0).tan() * focal_length; 
+        let viewport_height = 2.0 * h;
         let viewport_width = viewport_height * (self.image_width as f64 / self.image_height as f64);
         self.camera_center = Vec3(0.0, 0.0, 0.0);
 
