@@ -100,7 +100,11 @@ fn main() {
     cam.image_width = 600;
     cam.samples_per_pixel = 100;
     cam.max_depth = 50;
+
     cam.vfov = 90.0;
+    cam.lookfrom = Vec3(-2.0, 2.0, 1.0);
+    cam.lookat   = Vec3(0.0, 0.0, -1.0);
+    cam.vup      = Vec3(0.0, 1.0, 0.0);
 
     cam.render(world, f);
 }

@@ -29,7 +29,7 @@ impl Vec3 {
         )
     }
 
-    fn length(&self) -> f64 {
+    pub fn length(&self) -> f64 {
         let squared = self.0 * self.0 + self.1 * self.1 + self.2 * self.2;
         squared.sqrt()
     }
